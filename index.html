@@ -38,8 +38,9 @@ textarea::placeholder{color:var(--text3)}
 .saved-flash{font-size:13px;color:var(--green-text);margin-top:8px;display:none}
 .search-wrap{position:relative;margin-bottom:12px}
 .search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px}
-input[type="search"]{width:100%;padding:10px 12px 10px 36px;font-size:15px;border:.5px solid var(--border2);border-radius:var(--rs);background:var(--bg2);color:var(--text);font-family:inherit;outline:none}
-input[type="search"]::placeholder{color:var(--text3)}
+input[type="search"],input[type="password"],input[type="text"]{width:100%;padding:10px 12px 10px 36px;font-size:15px;border:.5px solid var(--border2);border-radius:var(--rs);background:var(--bg2);color:var(--text);font-family:inherit;outline:none}
+input[type="password"]{padding-left:12px}
+input[type="search"]::placeholder,input[type="password"]::placeholder{color:var(--text3)}
 .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .chip{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:.5px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .12s}
 .chip.active{background:var(--text);color:var(--bg);border-color:var(--text)}
@@ -56,6 +57,17 @@ input[type="search"]::placeholder{color:var(--text3)}
 .empty-sub{font-size:13px;color:var(--text3);margin-top:4px}
 .spinner{display:inline-block;width:15px;height:15px;border:2px solid var(--border2);border-top-color:var(--text);border-radius:50%;animation:spin .6s linear infinite;vertical-align:-3px;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* APIキー設定パネル */
+.api-panel{background:var(--bg2);border-radius:var(--r);padding:16px;margin-bottom:16px;border:.5px solid var(--border)}
+.api-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.api-row{display:flex;gap:8px;align-items:center}
+.api-input{flex:1;padding:9px 12px;font-size:14px;border:.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);font-family:inherit;outline:none}
+.api-input::placeholder{color:var(--text3)}
+.api-btn{padding:9px 14px;font-size:13px;font-weight:500;border:.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);cursor:pointer;white-space:nowrap}
+.api-btn:hover{background:var(--bg3)}
+.api-status{font-size:12px;margin-top:6px}
+.api-ok{color:var(--green-text)}
+.api-ng{color:#993c1d}
 .howto{background:var(--bg2);border-radius:var(--r);padding:16px;margin-top:20px;border:.5px solid var(--border)}
 .howto-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px}
 .step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
@@ -77,6 +89,16 @@ input[type="search"]::placeholder{color:var(--text3)}
   </div>
 
   <div class="section active" id="tab-translate">
+    <!-- APIキー設定 -->
+    <div class="api-panel" id="api-panel">
+      <div class="api-title">🔑 APIキー設定 / Cài đặt API Key</div>
+      <div class="api-row">
+        <input class="api-input" type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off">
+        <button class="api-btn" onclick="saveApiKey()">保存 / Lưu</button>
+      </div>
+      <div class="api-status" id="api-status"></div>
+    </div>
+
     <div id="lang-badge" class="lang-badge lang-ja">🇯🇵 日本語 → Tiếng Việt 🇻🇳</div>
     <textarea id="input-text" placeholder="ここに入力 / Nhập vào đây..." oninput="onInput(this.value)"></textarea>
     <button class="btn" id="translate-btn" onclick="doTranslate()">翻訳する / Dịch ngay</button>
@@ -91,9 +113,10 @@ input[type="search"]::placeholder{color:var(--text3)}
     </div>
     <div class="howto">
       <div class="howto-title">使い方 / Cách dùng</div>
-      <div class="step"><div class="step-n">1</div><div class="step-t">日本語かベトナム語を入力<div class="step-s">Nhập tiếng Nhật hoặc tiếng Việt</div></div></div>
-      <div class="step"><div class="step-n">2</div><div class="step-t">「翻訳する」を押す<div class="step-s">Nhấn nút Dịch ngay</div></div></div>
-      <div class="step"><div class="step-n">3</div><div class="step-t">「単語帳に保存」で記録<div class="step-s">Lưu lại để ôn tập sau</div></div></div>
+      <div class="step"><div class="step-n">1</div><div class="step-t">APIキーを入力して保存<div class="step-s">Nhập API Key và lưu (chỉ cần làm 1 lần)</div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-t">日本語かベトナム語を入力<div class="step-s">Nhập tiếng Nhật hoặc tiếng Việt</div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-t">「翻訳する」を押す<div class="step-s">Nhấn nút Dịch ngay</div></div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-t">「単語帳に保存」で記録<div class="step-s">Lưu lại để ôn tập sau</div></div></div>
     </div>
   </div>
 
@@ -113,11 +136,8 @@ input[type="search"]::placeholder{color:var(--text3)}
 </div>
 
 <script>
-// ========== CONFIG ==========
-const API_KEY = 'YOUR_API_KEY_HERE';
-// ============================
+const DB_KEY='genba-db-v2',HX_KEY='genba-hx-v2',KEY_KEY='genba-api-key';
 
-const DB_KEY='genba-db-v2',HX_KEY='genba-hx-v2';
 const SEED=[
   {id:1,ja:'安全',r:'あんぜん',vi:'An toàn',cat:'安全',src:'教材'},
   {id:2,ja:'危険',r:'きけん',vi:'Nguy hiểm',cat:'安全',src:'教材'},
@@ -155,8 +175,35 @@ function ldb(){try{const s=localStorage.getItem(DB_KEY);return s?JSON.parse(s):[
 function sdb(d){try{localStorage.setItem(DB_KEY,JSON.stringify(d))}catch(e){}}
 function lhx(){try{const s=localStorage.getItem(HX_KEY);return s?JSON.parse(s):[]}catch(e){return[]}}
 function shx(h){try{localStorage.setItem(HX_KEY,JSON.stringify(h))}catch(e){}}
+function getKey(){try{return localStorage.getItem(KEY_KEY)||''}catch(e){return''}}
+function setKey(k){try{localStorage.setItem(KEY_KEY,k)}catch(e){}}
 
 let db=ldb(),hx=lhx(),last=null,af='すべて';
+
+// APIキー初期化
+window.addEventListener('load',()=>{
+  const k=getKey();
+  if(k){
+    document.getElementById('api-key-input').value='••••••••••••••••';
+    document.getElementById('api-status').textContent='✓ APIキー設定済み / Đã cài đặt API Key';
+    document.getElementById('api-status').className='api-status api-ok';
+  }
+  renderDb();
+});
+
+function saveApiKey(){
+  const v=document.getElementById('api-key-input').value.trim();
+  if(!v||v.includes('•')){return;}
+  if(!v.startsWith('sk-ant-')){
+    document.getElementById('api-status').textContent='❌ キーの形式が正しくありません（sk-ant-で始まる必要があります）';
+    document.getElementById('api-status').className='api-status api-ng';
+    return;
+  }
+  setKey(v);
+  document.getElementById('api-key-input').value='••••••••••••••••';
+  document.getElementById('api-status').textContent='✓ 保存しました / Đã lưu';
+  document.getElementById('api-status').className='api-status api-ok';
+}
 
 function switchTab(name,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -177,6 +224,11 @@ function onInput(v){
 async function doTranslate(){
   const text=document.getElementById('input-text').value.trim();
   if(!text)return;
+  const apiKey=getKey();
+  if(!apiKey){
+    alert('先にAPIキーを入力・保存してください。\nVui lòng nhập và lưu API Key trước.');
+    return;
+  }
   const btn=document.getElementById('translate-btn');
   btn.disabled=true;
   btn.innerHTML='<span class="spinner"></span>翻訳中 / Đang dịch...';
@@ -186,7 +238,7 @@ async function doTranslate(){
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-calls':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-calls':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:400,
         system:`建設現場の日越バイリンガルアシスタント。${isJa?'日本語→ベトナム語':'ベトナム語→日本語'}に翻訳。JSONのみ返す（前置き不要）。形式:{"translation":"翻訳","reading":"${isJa?'ひらがな':'読み方'}","category":"安全/作業/日常/基礎/服装/労務/健康/その他"}`,
@@ -206,7 +258,7 @@ async function doTranslate(){
     last={id:Date.now(),ja:isJa?text:p.translation,r:isJa?p.reading:'',vi:isJa?p.translation:text,cat:p.category||'その他',src:'現場追加',date:new Date().toLocaleDateString('ja-JP')};
   }catch(err){
     document.getElementById('r-lang').textContent='エラー / Lỗi';
-    document.getElementById('r-text').textContent='翻訳できませんでした。index.htmlのAPIキーを確認してください。';
+    document.getElementById('r-text').textContent='翻訳できませんでした。APIキーを確認してください。';
     document.getElementById('r-reading').textContent='';
     document.getElementById('result-area').style.display='block';
     document.getElementById('save-btn').style.display='none';
@@ -257,8 +309,6 @@ function card(w,showDate){
 }
 
 function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-renderDb();
 </script>
 </body>
 </html>
